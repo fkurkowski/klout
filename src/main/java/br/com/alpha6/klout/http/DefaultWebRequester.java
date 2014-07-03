@@ -11,6 +11,9 @@ import org.slf4j.LoggerFactory;
 import static br.com.alpha6.klout.util.StringUtils.*;
 
 /**
+ * Default {@link WebRequester} implementation, with no external
+ * dependencies.
+ *
  * @author fkurkowski
  * @author thiagojv
  */
@@ -22,11 +25,7 @@ public class DefaultWebRequester implements WebRequester {
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
-	 * Executes a HTTP GET to a specific URL.
-	 *
-	 * @param url URL to send the HTTP GET
-	 * @return the response
-	 * @throws IOException
+	 * {@inheritDoc}
 	 */
 	public Response get(String url) throws IOException {
 
@@ -44,7 +43,14 @@ public class DefaultWebRequester implements WebRequester {
 
 		try {
 			is = getCorrectStream(conn);
-			return new Response(conn.getResponseCode(), fromInputStream(is));
+
+			Response response = new Response(conn.getResponseCode(), fromInputStream(is));
+			
+			if (logger.isDebugEnabled()) {
+				logger.debug("Received {}: {}", response.getCode(), response.getBody());
+			}
+
+			return response;
 		} finally {
 			close(is);
 		}

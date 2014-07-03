@@ -1,6 +1,14 @@
 package br.com.alpha6.klout;
 
+import java.io.IOException;
+import java.net.HttpURLConnection;
+
+import br.com.alpha6.klout.exception.ForbiddenException;
+import br.com.alpha6.klout.exception.KloutException;
+import br.com.alpha6.klout.exception.NotFoundException;
+import br.com.alpha6.klout.exception.UnavailableException;
 import br.com.alpha6.klout.http.DefaultWebRequester;
+import br.com.alpha6.klout.http.Response;
 import br.com.alpha6.klout.http.WebRequester;
 import br.com.alpha6.klout.mapper.GsonMapper;
 import br.com.alpha6.klout.mapper.Mapper;
@@ -10,17 +18,14 @@ import br.com.alpha6.klout.model.Network;
 import br.com.alpha6.klout.model.Score;
 import br.com.alpha6.klout.model.Topic;
 import br.com.alpha6.klout.model.User;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-
+/**
+ * Default {@link KloutAPI} implementation.
+ *
+ * @author fkurkowski
+ * @author thiagojv
+ */
 public class Klout implements KloutAPI {
-
-	/**
-	 * Logger
-	 */
-	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	private static final String BASE_URL = "http://api.klout.com/v2/";
 	private static final String IDENTITY_URL = BASE_URL + "identity.json/%s/%s?key=%s";
@@ -35,63 +40,122 @@ public class Klout implements KloutAPI {
 	private WebRequester requester;
 	private Mapper mapper;
 
+	/**
+	 * Creates a new Klout client.
+	 *
+	 * @param apiKey Klout API key
+	 */
 	public Klout(String apiKey) {
 		this(apiKey, new DefaultWebRequester(), new GsonMapper());
 	}
 
+	/**
+	 * Creates a new Klout client.
+	 *
+	 * @param apiKey Klout API key
+	 * @param requester an web requester
+	 */
 	public Klout(String apiKey, WebRequester requester) {
 		this(apiKey, requester, new GsonMapper());
 	}
 
+	/**
+	 * Creates a new Klout client.
+	 *
+	 * @param apiKey Klout API key
+	 * @param requester an web requester
+	 * @param mapper an response mapper
+	 */
 	public Klout(String apiKey, WebRequester requester, Mapper mapper) {
 		this.apiKey = apiKey;
 		this.requester = requester;
 		this.mapper = mapper;
 	}
 
-	private <T> T makeRequest(String url, Class<T> clazz) {
+	/**
+	 * Makes a HTTP GET request to an URL and maps the response.
+	 *
+	 * @param url endpoint
+	 * @param clazz class to map the response to
+	 * @return the response mapped to the specified class
+	 * @throws KloutException
+	 */
+	private <T> T makeRequest(String url, Class<T> clazz) throws KloutException {
+		Response response;
+		
 		try {
-			return mapper.map(requester.get(url).getBody(), clazz);
+			response = requester.get(url);
 		} catch (IOException e) {
-			if (logger.isWarnEnabled()) {
-				logger.warn("Could not fetch resource at {}", url);
-			}
+			throw new KloutException(e);
 		}
-
-		return null;
+		
+		switch (response.getCode()) {
+			case HttpURLConnection.HTTP_FORBIDDEN:
+				throw new ForbiddenException();
+			case HttpURLConnection.HTTP_UNAVAILABLE:
+			case HttpURLConnection.HTTP_GATEWAY_TIMEOUT:
+				throw new UnavailableException();
+			case HttpURLConnection.HTTP_NOT_FOUND:
+				throw new NotFoundException();
+			case HttpURLConnection.HTTP_OK:
+				return mapper.map(response.getBody(), clazz);
+			default:
+				throw new KloutException(response.getBody());
+		}
 	}
 
-	public Identity getKloutId(Network network, String id) {
+	/**
+	 * {@inheritDoc}
+	 */
+	public Identity getKloutId(Network network, String id) throws KloutException {
 		String url = String.format(IDENTITY_URL, network, id, apiKey);
 		return makeRequest(url, Identity.class);
 	}
 
-	public Identity getKloutIdFromTwitterScreenName(String screenName) {
+	/**
+	 * {@inheritDoc}
+	 */
+	public Identity getKloutIdFromTwitterScreenName(String screenName) throws KloutException {
 		String url = String.format(IDENTITY_SCREEN_NAME_URL, screenName, apiKey);
 		return makeRequest(url, Identity.class);
 	}
 
-	public Identity getTwitterIdFromKloutId(String kloutId) {
+	/**
+	 * {@inheritDoc}
+	 */
+	public Identity getTwitterIdFromKloutId(String kloutId) throws KloutException {
 		String url = String.format(IDENTITY_KLOUT_URL, kloutId, apiKey);
 		return makeRequest(url, Identity.class);
 	}
 
-	public User showUser(String kloutId) {
+	/**
+	 * {@inheritDoc}
+	 */
+	public User showUser(String kloutId) throws KloutException {
 		String url = String.format(USER_URL, kloutId, apiKey);
 		return makeRequest(url, User.class);
 	}
 
-	public Score getScore(String kloutId) {
+	/**
+	 * {@inheritDoc}
+	 */
+	public Score getScore(String kloutId) throws KloutException {
 		String url = String.format(SCORE_URL, kloutId, apiKey);
 		return makeRequest(url, Score.class);
 	}
 
-	public Topic[] getTopics(String kloutId) {
+	/**
+	 * {@inheritDoc}
+	 */
+	public Topic[] getTopics(String kloutId) throws KloutException {
 		String url = String.format(TOPICS_URL, kloutId, apiKey);
 		return makeRequest(url, Topic[].class);
 	}
 
-	public Influence getInfluence(String kloutId) {
+	/**
+	 * {@inheritDoc}
+	 */
+	public Influence getInfluence(String kloutId) throws KloutException {
 		String url = String.format(INFLUENCE_URL, kloutId, apiKey);
 		return makeRequest(url, Influence.class);
 	}

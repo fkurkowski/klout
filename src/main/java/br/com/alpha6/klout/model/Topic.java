@@ -1,6 +1,10 @@
 package br.com.alpha6.klout.model;
 
+/**
+ * Information about a topic.
+ */
 public class Topic {
+
 	public String id;
 	public String displayName;
 	public String name;
@@ -9,59 +13,79 @@ public class Topic {
 	public String displayType;
 	public String topicType;
 
+	/**
+	 * Returns the topic id.
+	 *
+	 * @return topic id
+	 */
 	public String getId() {
 		return id;
 	}
 
-	public void setId(String id) {
-		this.id = id;
-	}
-
+	/**
+	 * Returns the topic display name.
+	 *
+	 * @return topic display name
+	 */
 	public String getDisplayName() {
 		return displayName;
 	}
 
-	public void setDisplayName(String displayName) {
-		this.displayName = displayName;
-	}
-
+	/**
+	 * Returns the topic name.
+	 *
+	 * @return topic name
+	 */
 	public String getName() {
 		return name;
 	}
 
-	public void setName(String name) {
-		this.name = name;
-	}
-
+	/**
+	 * Returns the topic slug.
+	 *
+	 * @return topic slug.
+	 */
 	public String getSlug() {
 		return slug;
 	}
 
-	public void setSlug(String slug) {
-		this.slug = slug;
-	}
-
+	/**
+	 * Returns the topic image url.
+	 *
+	 * @return topic image url.
+	 */
 	public String getImageUrl() {
 		return imageUrl;
 	}
 
-	public void setImageUrl(String imageUrl) {
-		this.imageUrl = imageUrl;
-	}
-
+	/**
+	 * Returns the topic display type.
+	 *
+	 * @return topic display type
+	 */
 	public String getDisplayType() {
 		return displayType;
 	}
 
-	public void setDisplayType(String displayType) {
-		this.displayType = displayType;
-	}
-
+	/**
+	 * Returns the topic type.
+	 *
+	 * @return topic type
+	 */
 	public String getTopicType() {
 		return topicType;
 	}
 
-	public void setTopicType(String topicType) {
-		this.topicType = topicType;
+	@Override
+	public String toString() {
+		return "Topic{" +
+				"id='" + id + '\'' +
+				", displayName='" + displayName + '\'' +
+				", name='" + name + '\'' +
+				", slug='" + slug + '\'' +
+				", imageUrl='" + imageUrl + '\'' +
+				", displayType='" + displayType + '\'' +
+				", topicType='" + topicType + '\'' +
+				'}';
 	}
 }

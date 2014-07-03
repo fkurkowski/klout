@@ -2,18 +2,21 @@ package br.com.alpha6.klout;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import br.com.alpha6.klout.http.DefaultWebRequester;
-import br.com.alpha6.klout.http.JSONReader;
-import br.com.alpha6.klout.http.Response;
-import br.com.alpha6.klout.http.WebRequester;
+import java.net.HttpURLConnection;
+
+import br.com.alpha6.klout.exception.*;
 import org.junit.Before;
 import org.junit.Test;
 
+import br.com.alpha6.klout.http.JSONReader;
+import br.com.alpha6.klout.http.Response;
+import br.com.alpha6.klout.http.WebRequester;
 import br.com.alpha6.klout.model.Identity;
 import br.com.alpha6.klout.model.Influence;
 import br.com.alpha6.klout.model.Network;
@@ -44,6 +47,45 @@ public class KloutTest {
 				.thenReturn(new Response(200, body));
 	}
 
+	private void mockResponse(int errorCode) throws Exception {
+		when(requester.get(anyString()))
+				.thenReturn(new Response(errorCode, ""));
+	}
+
+	@Test(expected=ForbiddenException.class)
+	public void shouldThrowForbiddenException() throws Exception {
+		mockResponse(HttpURLConnection.HTTP_FORBIDDEN);
+
+		assertNull(klout.getKloutId(Network.TWITTER, TWITTER_ID));
+	}
+	
+	@Test(expected=UnavailableException.class)
+	public void shouldThrowUnavailableException() throws Exception {
+		mockResponse(HttpURLConnection.HTTP_UNAVAILABLE);
+
+		assertNull(klout.getKloutId(Network.TWITTER, TWITTER_ID));
+	}
+	
+	@Test(expected=UnavailableException.class)
+	public void shouldThrowTimeOutException() throws Exception {
+		mockResponse(HttpURLConnection.HTTP_GATEWAY_TIMEOUT);
+
+		assertNull(klout.getKloutId(Network.TWITTER, TWITTER_ID));
+	}
+
+	@Test(expected=NotFoundException.class)
+	public void shouldThrowNotFoundException() throws Exception {
+		mockResponse(HttpURLConnection.HTTP_NOT_FOUND);
+
+		assertNull(klout.getKloutId(Network.TWITTER, TWITTER_ID));
+	}
+
+	@Test(expected=KloutException.class)
+	public void shouldThrowKloutUnknownException() throws Exception {
+		mockResponse(HttpURLConnection.HTTP_INTERNAL_ERROR);
+
+		assertNull(klout.getKloutId(Network.TWITTER, TWITTER_ID));
+	}
 
 	@Test
 	public void shouldGetKloutId() throws Exception {
