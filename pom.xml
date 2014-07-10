@@ -5,7 +5,7 @@
     <groupId>br.com.alpha6</groupId>
     <artifactId>klout-client</artifactId>
     <packaging>jar</packaging>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.1</version>
 
     <name>Klout Client</name>
     <description>A simple Klout API client library written in Java.</description>
