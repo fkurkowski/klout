@@ -11,6 +11,18 @@
     <description>A simple Klout API client library written in Java.</description>
     <url>http://www.alpha6.com.br</url>
 
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <scm>
+        <url>https://github.com/alpha-6/klout</url>
+    </scm>
+
     <dependencies>
         <dependency>
             <groupId>com.google.code.gson</groupId>
