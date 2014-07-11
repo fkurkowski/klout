@@ -5,15 +5,25 @@ package br.com.alpha6.klout.model;
  */
 public class Identity {
 
-	/**
-	 * ID on the social network.
-	 */
 	private String id;
+	private String network;
 
 	/**
-	 * Social network.
+	 * Creates a new instance of this class.
 	 */
-	private String network;
+	public Identity() {
+	}
+
+	/**
+	 * Creates a new instance of this class with the user information defined
+	 *
+	 * @param id      the id on the social network.
+	 * @param network the social network of this id.
+	 */
+	public Identity(String id, String network) {
+		this.id = id;
+		this.network = network;
+	}
 
 	/**
 	 * Returns the id on the social network.
@@ -25,12 +35,30 @@ public class Identity {
 	}
 
 	/**
+	 * Defines the id on the social network.
+	 *
+	 * @param id the id on the social network.
+	 */
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	/**
 	 * Returns the social network of this id.
 	 *
 	 * @return social network of the id
 	 */
 	public String getNetwork() {
 		return network;
+	}
+
+	/**
+	 * Defines the social network of this id.
+	 *
+	 * @param network the social network of this id.
+	 */
+	public void setNetwork(String network) {
+		this.network = network;
 	}
 
 	@Override

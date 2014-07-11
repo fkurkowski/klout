@@ -15,13 +15,19 @@ public class Influence {
 	private int influenceesCount;
 
 	/**
+	 * Creates a new instance of this class.
+	 */
+	public Influence() {
+	}
+
+	/**
 	 * Creates a new instance of this class with the influence information
 	 * associated to an user.
 	 *
-	 * @param influencers      users that influence the user (influencers)
-	 * @param influencees      users influenced by the user (influencees)
-	 * @param influencersCount number of influencers
-	 * @param influenceesCount number of influencees
+	 * @param influencers      users that influence the user (influencers).
+	 * @param influencees      users influenced by the user (influencees).
+	 * @param influencersCount number of influencers.
+	 * @param influenceesCount number of influencees.
 	 */
 	public Influence(List<User> influencers, List<User> influencees,
 	                 int influencersCount, int influenceesCount) {
@@ -41,14 +47,31 @@ public class Influence {
 	}
 
 	/**
+	 * Defines the user's influencers.
+	 *
+	 * @param influencers influencers of the user.
+	 */
+	public void setInfluencers(List<User> influencers) {
+		this.influencers = influencers;
+	}
+
+	/**
 	 * Returns a list with the users influenced by the user.
 	 *
-	 * @return influencees
+	 * @return influencees.
 	 */
 	public List<User> getInfluencees() {
 		return influencees;
 	}
 
+	/**
+	 * Defines the user's influencees.
+	 *
+	 * @param influencees a list with the users influenced by the user.
+	 */
+	public void setInfluencees(List<User> influencees) {
+		this.influencees = influencees;
+	}
 
 	/**
 	 * Returns the number of influencers.
@@ -60,12 +83,30 @@ public class Influence {
 	}
 
 	/**
+	 * Defines the number of influencers.
+	 *
+	 * @param influencersCount the number of influencers.
+	 */
+	public void setInfluencersCount(int influencersCount) {
+		this.influencersCount = influencersCount;
+	}
+
+	/**
 	 * Returns the number of influencees.
 	 *
 	 * @return number of influencees.
 	 */
 	public int getInfluenceesCount() {
 		return influenceesCount;
+	}
+
+	/**
+	 * Defines the number of influencees.
+	 *
+	 * @param influenceesCount the number of influencees.
+	 */
+	public void setInfluenceesCount(int influenceesCount) {
+		this.influenceesCount = influenceesCount;
 	}
 
 	@Override

@@ -7,7 +7,8 @@ public enum Network {
 
 	TWITTER("tw"),
 	INSTAGRAM("ig"),
-	GOOGLE_PLUS("gp");
+	GOOGLE_PLUS("gp"),
+	KLOUT("ks");
 
 	private String code;
 
